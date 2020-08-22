@@ -1,26 +1,39 @@
-const patch = require('path');
+const path = require('path')
+const HTMLWebpackPlugin = require('html-webpack-plugin')
+const{CleanWebpackPlugin} = require('clean-webpack-plugin')
 
-module.exports = {
-    entry: [
-      './src/js/index.js',
-    ],
-    output: {
-      filename: './js/bundle.js'
+module.exports = { 
+    context: path.resolve(__dirname, 'src'),
+    mode: 'development',
+    entry: {
+        main: './js/index.js'      
     },
-    devtool: "source-map",
+    output: {
+        filename: '[name].[contenthash].js',
+        path: path.resolve(__dirname, 'dist')
+    },
+    plugins: [
+        new HTMLWebpackPlugin({
+            template: './pug/index.pug',
+            filename: './html/index.html'
+        }),
+        new CleanWebpackPlugin()
+    ],
     module: {
-        rules: [{
-            test: /\.js$/,
-            include: path.resolve(__dirname, 'src/js'),
-            use: {
-              loader: 'babel-loader',
-              options: {
-                presets: 'env'
-              }
+         rules: [
+             {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
+             },
+             
+             {
+              test: /\.pug$/,
+                use: [
+                  "html-loader",
+                  "pug-html-loader"
+                ]
             }
-          },
-        ]
-      },
-      plugins: [
-      ]
-    };
+
+         ]
+    }  
+}
